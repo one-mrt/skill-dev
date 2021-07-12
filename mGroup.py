@@ -77,3 +77,75 @@ print('=================')
 s = small_fb.Nationality.value_counts()
 print(s.index)
 print(len(s.index))
+
+
+# Список уникальных элементов из серии
+
+print('=================')
+display(small_fb.Nationality.unique())
+
+# Подсчет количества уникальных значений
+
+print('=================')
+display(len(small_fb.Nationality.unique()))
+print('=================')
+display(small_fb.Nationality.nunique())
+print('=================')
+display(small_fb.Nationality.count())
+print('=================---///')
+display(len(small_fb.Nationality.value_counts()))
+
+
+# Преобразование серии value_counts в датафрейм
+
+print('=================---///')
+
+s = small_fb.Nationality.value_counts()
+s_fb = s.reset_index()
+display(s_fb)
+
+print('=================---///')
+
+# переименование столбцов дата фрейма
+
+s_fb.columns = ['Страна', 'Количество игроков']
+display(s_fb)
+
+print('=================---///')
+
+display('''Процент испанских футболистов зарплата находится
+        впределах 25% минимума от наблюдаемого уровня зарпалат среди
+        испанских игроков\n''',
+        round(fb[fb.Nationality
+                == 'Spain'].Wage.value_counts(bins=4, normalize=True) * 100))
+
+print('=================---///')
+
+display('''Количество национальностей, к которым относятся футболисты,
+        выступающие за клуб Manchester United - ''',
+        fb[fb.Club == 'Manchester United'].Nationality.nunique())
+
+print('=================---///')
+
+display('''Два футболиста из Бразилии, выступающие за клуб Ювентус\n''',
+        fb[(fb.Nationality == 'Brazil') & (fb.Club == 'Juventus')].Name.unique())
+
+print('=================---///')
+
+clubCount = fb[fb.Age > 35].Club.value_counts().reset_index()
+clubCount.columns = ['Клуб','Кол.игроков']
+
+display('''Какой из клубов насчитывает большее количество футболистов возрастом
+        старше 35 лет - \n''',clubCount)
+
+print('=================---///')
+display('''Разбить всех футболистов родом из Аргентины на 4 равные группы
+        по возрасту\n''',
+        fb[fb.Nationality == 'Argentina'].Age.value_counts(bins=4))
+
+
+print('=================---///')
+ageSpain = fb[(fb.Nationality == 'Spain')].Age.value_counts(normalize=True).reset_index()
+ageSpain.columns = ['Возраст', 'Процент']
+display('''Процент футболистов из Испании которые имею возраст 21 год\n''',
+        ageSpain)
