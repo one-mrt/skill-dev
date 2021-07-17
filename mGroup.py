@@ -1,5 +1,6 @@
 import pandas as pd
 from IPython.display import display
+from pandas.core.reshape.pivot import pivot_table
 
 # Что такое группировка данных
 
@@ -149,3 +150,167 @@ ageSpain = fb[(fb.Nationality == 'Spain')].Age.value_counts(normalize=True).rese
 ageSpain.columns = ['Возраст', 'Процент']
 display('''Процент футболистов из Испании которые имею возраст 21 год\n''',
         ageSpain)
+
+print('=================---------')
+
+# Функция groupby
+
+print(fb.groupby('Club'))
+
+print('=================---------')
+
+#display(fb.groupby(['Club']).groups)
+
+grouped_fb = fb.groupby(['Club']).Wage.sum()
+display(grouped_fb)
+
+print('=================---------')
+
+display(grouped_fb.loc['Ajax'])
+
+print('=================---------')
+
+#display(grouped_fb.loc['Ajax'].Wage)
+
+grouped_fb = fb.groupby(['Club']).Wage.sum().sort_values(ascending=False)
+print(grouped_fb.head(5).max())
+
+print('=================---------')
+
+# Задание
+
+groupPosition = fb.groupby(['Position']).Wage.sum()
+display(groupPosition.sort_values(ascending=False))
+
+print('=================---------')
+
+
+display(fb.groupby(['Nationality'])[['Wage','Age','ShotPower']].mean())
+
+print('=================---------')
+
+display(fb.groupby(['Nationality'])[['Wage','Age','ShotPower']]
+        .mean()
+        .sort_values(['Wage'],ascending=False)
+        .head(10))
+
+print('=================---------')
+
+display(fb.loc[fb.Nationality == 'Dominican Republic'][['Name','Club','Wage','Age','ShotPower']])
+
+print('=================---------')
+
+display(fb.groupby(['Position'])[['Wage','Value']]
+        .mean()
+        .sort_values(['Value','Wage'],ascending=False)
+        .head(5))
+
+print('Функция nunique - =================---------')
+
+display(fb.groupby(['Nationality'])[['Club','Name']].nunique())
+
+display()
+print('Функция count - =================---------')
+
+display(fb.groupby(['Club']).Name.count())
+
+display()
+print('Функция median - =================---------')
+
+display(fb.groupby(['Club']).Dribbling.median())
+
+display()
+print('Функция max - =================---------')
+
+display(fb.groupby(['Club']).Strength.max().sort_values(ascending=True))
+
+display()
+print('Функция min - =================---------')
+display()
+
+display(fb.groupby(['Club']).Balance.min())
+
+
+# Задание
+
+display()
+print('Задание - =================---------')
+display()
+
+display('''Подсчитать среднюю и медианную зарплату футболистов из разных
+        клубов.В скольких клубах средняя и медианная зарплаты
+        совпадают?\n''',
+        fb.groupby(['Club']).Wage.agg(['mean','median'])
+                [fb.groupby(['Club']).Wage.mean()
+                        == fb.groupby(['Club']).Wage.median()].count())
+
+display()
+print('Задание - =================---------')
+display()
+
+display('''Каков максимальный размер средней зарплаты в этой группе
+        клубов\n''',
+        fb.groupby(['Club']).Wage
+                .agg(['mean','median'])[fb.groupby(['Club']).Wage.mean()
+                        == fb.groupby(['Club']).Wage.median()].max())
+
+display()
+print('Задание - =================---------')
+display()
+
+display('''Как называется клуб, где игроки получают такую зарплату\n''',
+        fb.groupby(['Club']).Wage
+                .agg(['mean', 'median'])
+                        [fb.groupby(['Club']).Wage.mean()
+                                == fb.groupby(['Club']).Wage.median()]
+                                        .sort_values(
+                                                ['mean','median'],
+                                                ascending=False).head(1))
+
+
+display()
+print('Задача 1 =================')
+display()
+
+display('''С помощью функции groupby посчитать сумму зарплат футболистов клуба
+        "Chelsea"\n''',
+        fb[fb.Club == 'Chelsea'].groupby(['Club']).Wage.agg(['sum']))
+
+display()
+print('Задача 2 =================')
+display()
+
+display('''Определить максимальную зарплату футболиста национальности
+        Аргентина в возрасте 20 лет''',
+        fb[(fb.Nationality=='Argentina') & (fb.Age == 20)].Wage.max())
+
+display()
+print('Задача 3 =================')
+display()
+
+display('''Определить максимальную зарплату футболиста национальности
+        Аргентина в возрасте 30 лет''',
+        fb[(fb.Nationality == 'Argentina') & (fb.Age == 30)].Wage.max())
+
+display()
+print('Задача 4 =================')
+display()
+
+display('''Определить минимальную зарплату футболиста национальности
+        Аргентина в возрасте 30 лет''',
+        fb[(fb.Nationality == 'Argentina') & (fb.Age == 30)].Wage.min())
+
+display()
+print('Задача 4 =================')
+display()
+
+display('''Определить максимальную силу и баланс среди игроков клуба
+        "FC Barcelona" из Аргентины\n''',
+        fb[(fb.Club == 'FC Barcelona') & (fb.Nationality == 'Argentina')]
+                [['Strength','Balance']].max())
+
+# Функция pivot_table
+
+pivot = fb.loc[fb.Club
+                .isin(['FC Barcelona','Real Madrid','Juventus','Manchester United'])].pivot_table(values=['Wage'],index=['Nationality'],columns=['Club'],aggfunc='sum')
+display(pivot)
