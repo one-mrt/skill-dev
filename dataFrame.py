@@ -130,7 +130,7 @@ display('''Во сколько раз средняя зарплата голки
                         & (football.GKHandling
                             == football.GKHandling.max())].Wage.mean(),2))
 
-fb = football = pd.read_csv('./file/data_sf.csv')
+fb = pd.read_csv('./file/data_sf.csv')
 
 display('''Определить, во сколько раз средняя сила удра самых агрессивных
         игроков выше средней силы удара игроков с минимальной агрессией''',
